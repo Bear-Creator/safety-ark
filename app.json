@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "SafetyArk",
+    "slug": "safetyark",
+    "version": "1.0.0",
+    "scheme": "safetyark",
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
