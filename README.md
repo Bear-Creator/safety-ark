@@ -28,7 +28,7 @@
 ### Установка
 
 ```bash
-git clone https://github.com/q8yAzooz/SafetyArk.git
+git clone https://gitlab.com/rigor-erectus/safety-ark.git
 cd SafetyArk
 npm install
 ```
