@@ -10,9 +10,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      "expo-contacts",
-      "expo-haptics"
+      "expo-contacts"
     ],
     "experiments": {
       "typedRoutes": true

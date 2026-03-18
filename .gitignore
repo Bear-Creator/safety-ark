@@ -2,6 +2,17 @@
 .claude/
 docs/
 
+# IDE
+.idea/
+.vscode/
+
+# Android / iOS native builds
+android/
+ios/
+
+# Design files
+safetyarc-design.html
+
 # Expo / React Native
 node_modules/
 .expo/

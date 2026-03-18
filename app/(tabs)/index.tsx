@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { Text, Button, Surface, ActivityIndicator } from 'react-native-paper'
 import { router } from 'expo-router'
-import { useCheckupStore, getRemainingMs, formatTime } from '@/store/checkupStore'
+import { useCheckupStore, getRemainingMs, getResponseRemainingMs, formatTime } from '@/store/checkupStore'
 import { StatusCard } from '@/components/StatusCard'
 import { SectionTitle } from '@/components/SectionTitle'
 import { Colors } from '@/theme/theme'
@@ -34,8 +34,12 @@ export default function HomeScreen() {
     }
   }, [store.status])
 
-  const remainingMs = useMemo(() => getRemainingMs(store), [store.timerStartedAt, store.status])
-  const timeStr = formatTime(remainingMs)
+  const remainingMs = getRemainingMs(store)
+  const responseMs = getResponseRemainingMs(store)
+  // Когда ожидаем ответ — показываем обратный отсчёт секунд, иначе — основной таймер
+  const timeStr = store.status === 'pending'
+    ? `${Math.ceil(responseMs / 1000)}с`
+    : formatTime(remainingMs)
 
   if (loading) {
     return <View style={styles.center}><ActivityIndicator /></View>
@@ -50,7 +54,7 @@ export default function HomeScreen() {
 
       <Surface style={[styles.timerCard, isAlert && styles.timerCardAlert]} elevation={2}>
         <Text variant="labelLarge" style={styles.timerLabel}>
-          {isAlert ? 'ТРЕВОГА АКТИВНА' : 'СЛЕДУЮЩИЙ ЧЕК-АП ЧЕРЕЗ'}
+          {isAlert ? 'ТРЕВОГА АКТИВНА' : store.status === 'pending' ? 'ОТВЕТЬТЕ В ТЕЧЕНИЕ' : 'СЛЕДУЮЩИЙ ЧЕК-АП ЧЕРЕЗ'}
         </Text>
         <Text style={[styles.timerValue, { color: isAlert ? Colors.accent : timerColor(store.status) }]}>
           {isAlert ? '⚡' : timeStr}

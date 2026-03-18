@@ -7,7 +7,16 @@ import { ToggleRow } from '@/components/ToggleRow'
 import { SectionTitle } from '@/components/SectionTitle'
 import { Colors } from '@/theme/theme'
 
-const INTERVALS = [1, 4, 12, 24]
+const INTERVALS = [
+  { label: '30с', hours: 30 / 3600 },
+  { label: '1м',  hours: 1 / 60 },
+  { label: '1ч',  hours: 1 },
+  { label: '4ч',  hours: 4 },
+  { label: '12ч', hours: 12 },
+  { label: '24ч', hours: 24 },
+]
+
+const isActiveInterval = (a: number, b: number) => Math.abs(a - b) < 1e-6
 
 export default function SettingsScreen() {
   const store = useCheckupStore()
@@ -20,9 +29,9 @@ export default function SettingsScreen() {
       <SectionTitle title="Интервал чек-апа" />
       <Surface style={styles.card} elevation={1}>
         <View style={styles.chips}>
-          {INTERVALS.map((h) => (
-            <Button key={h} mode={store.intervalHours === h ? 'contained' : 'outlined'} onPress={() => store.setInterval(h)} style={styles.chip} compact>
-              {h}ч
+          {INTERVALS.map(({ label, hours }) => (
+            <Button key={label} mode={isActiveInterval(store.intervalHours, hours) ? 'contained' : 'outlined'} onPress={() => store.setInterval(hours)} style={styles.chip} compact>
+              {label}
             </Button>
           ))}
         </View>
@@ -52,7 +61,7 @@ const styles = StyleSheet.create({
   container: { padding: 20, paddingBottom: 40 },
   title: { color: Colors.text, fontWeight: '700', marginBottom: 8 },
   card: { borderRadius: 16, padding: 16, backgroundColor: Colors.surface, marginBottom: 8 },
-  chips: { flexDirection: 'row', gap: 8 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { borderRadius: 20 },
   menuItem: { justifyContent: 'flex-start' },
 })
