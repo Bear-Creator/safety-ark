@@ -10,10 +10,20 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-contacts",
+      "expo-haptics"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "android": {
+      "package": "com.anonymous.safetyark"
+    },
+    "ios": {
+      "infoPlist": {
+        "NSContactsUsageDescription": "SafetyArk использует контакты для добавления доверенных лиц"
+      }
     }
   }
 }
