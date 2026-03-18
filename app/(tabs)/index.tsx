@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { Text, Button, Surface, ActivityIndicator } from 'react-native-paper'
 import { router } from 'expo-router'
@@ -7,10 +7,12 @@ import { StatusCard } from '@/components/StatusCard'
 import { SectionTitle } from '@/components/SectionTitle'
 import { Colors } from '@/theme/theme'
 import { mockCheckupHistory } from '@/mocks/checkup'
+import { haptics } from '@/utils/haptics'
 
 export default function HomeScreen() {
   const store = useCheckupStore()
   const [, forceUpdate] = useState(0)
+  const prevStatusRef = useRef(store.status)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -21,6 +23,16 @@ export default function HomeScreen() {
     }, 1000)
     return () => clearInterval(id)
   }, [])
+
+  useEffect(() => {
+    const current = store.status
+    const prev = prevStatusRef.current
+    if (prev !== current) {
+      if (current === 'warning') haptics.warning()
+      if (current === 'pending') haptics.error()
+      prevStatusRef.current = current
+    }
+  }, [store.status])
 
   const remainingMs = useMemo(() => getRemainingMs(store), [store.timerStartedAt, store.status])
   const timeStr = formatTime(remainingMs)
