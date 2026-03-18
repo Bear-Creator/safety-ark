@@ -1,17 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native'
 import { Text, Surface, Button, TextInput, Snackbar } from 'react-native-paper'
 import { router } from 'expo-router'
 import { useCheckupStore } from '@/store/checkupStore'
+import { useContactsStore } from '@/store/contactsStore'
 import { SendingRow } from '@/components/SendingRow'
 import { Colors } from '@/theme/theme'
-import { mockContacts } from '@/mocks/contacts'
+import { haptics } from '@/utils/haptics'
 
 export default function FailScreen() {
   const cancelAlert = useCheckupStore((s) => s.cancelAlert)
+  const { contacts } = useContactsStore()
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
+
+  useEffect(() => {
+    haptics.error()
+  }, [])
 
   const handleCancel = () => {
     const ok = cancelAlert(password)
@@ -32,15 +38,19 @@ export default function FailScreen() {
 
       <Surface style={styles.card} elevation={1}>
         <Text variant="titleSmall" style={styles.cardTitle}>Статус отправки</Text>
-        {mockContacts.map((c, i) => (
-          <React.Fragment key={c.id}>
-            <Text variant="labelMedium" style={styles.contactName}>{c.emoji} {c.name}</Text>
-            {c.sms && <SendingRow icon="📱" label="SMS" delayMs={i * 600 + 300} />}
-            {c.call && <SendingRow icon="📞" label="Звонок" delayMs={i * 600 + 900} />}
-            {c.email_notify && <SendingRow icon="📧" label="Email" delayMs={i * 600 + 1500} />}
-            {c.capsule && <SendingRow icon="💊" label="Капсула данных" delayMs={i * 600 + 2100} />}
-          </React.Fragment>
-        ))}
+        {contacts.length === 0 ? (
+          <Text style={{ color: '#cccccc', marginTop: 8 }}>Нет доверенных контактов</Text>
+        ) : (
+          contacts.map((c, i) => (
+            <React.Fragment key={c.id}>
+              <Text variant="labelMedium" style={styles.contactName}>{c.emoji} {c.name}</Text>
+              {c.sms && <SendingRow icon="📱" label="SMS" delayMs={i * 600 + 300} />}
+              {c.call && <SendingRow icon="📞" label="Звонок" delayMs={i * 600 + 900} />}
+              {c.email_notify && <SendingRow icon="📧" label="Email" delayMs={i * 600 + 1500} />}
+              {c.capsule && <SendingRow icon="💊" label="Капсула данных" delayMs={i * 600 + 2100} />}
+            </React.Fragment>
+          ))
+        )}
         <SendingRow icon="📍" label="Геолокация (мок)" delayMs={500} />
       </Surface>
 
