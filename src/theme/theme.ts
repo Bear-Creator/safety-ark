@@ -29,6 +29,7 @@ export const Colors = {
   warn: '#f4a261',
   bg: '#f5f7fa',
   surface: '#ffffff',
+  outline: AppTheme.colors.outline,
   text: '#1a1f2e',
   text2: '#586069',
   text3: '#8b949e',
